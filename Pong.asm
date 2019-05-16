@@ -6,6 +6,7 @@
 include Pong.inc
 
 .data
+welcome byte "hey", 0
 gameSpeed dword 1h
 
 ; game board and frame data
@@ -34,6 +35,9 @@ main proc
 
       invoke DrawFrame, boardWidth, boardHeight, borderWidth, addr space
 
+     ;call DrawFrame, addr space,
+     mov edx, OFFSET welcome
+     call WriteString
 MainLoop:
 	 ; Do stuff
 	 ; call Clrscr
