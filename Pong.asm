@@ -6,7 +6,7 @@
 include Irvine32.inc
 
 .data
-sampleString byte "Hello World", 0
+welcome byte "hey", 0
 gameSpeed dword 1h
 
 gameWidth dword 50h
@@ -28,8 +28,9 @@ guiColor dword (blue * 16)
 
 .code
 main proc
-     call DrawFrame, addr space
-     
+     ;call DrawFrame, addr space,
+     mov edx, OFFSET welcome
+     call WriteString
 MainLoop:
 	 ; Do stuff
 	 ; call Clrscr
