@@ -1,0 +1,52 @@
+# Pong Assembly 
+
+### *DATA*
+BallMovementSpeed
+PlayerMovementSpeed = 2;
+LeftPlayerName BYTE 15 DUP(?)
+RightPlayerName BYTE 15 DUP(?)
+Left/Right player’s coordinates
+Left/Right player’s points
+GameWidth
+GameHeight
+
+											*[COLORS]*
+PlayerColor
+BallColor
+ScoreColor
+
+
+### *MAIN GAME LOOP*
+
+1. Clear Screen
+2. Move Ball
+3. Draw Ball
+4. Check for left player’s movement
+5. Check for right player’s movement 
+6. Draw Players
+7. Call CheckForScore 
+
+Refresh
+Clear
+Call drawBall
+Call drawPlayers
+-> Store
+Call drawScore
+-> Using variables to reset and redraw a given area (?)
+
+### *CheckForScore PROC*
+
+1. Check position of ball relative to left/right player’s coordinates
+	1. Increment point for winner (or do nothing)
+2. Reset Ball position
+3. Set timer (3…2…1… GO!)
+	1. Freeze players during countdown?
+
+
+### *Notes:*
+Irvine32's Library has a ReadKey procedure:
+"Reads a character from the keyboard’s input buffer without waiting for input."
+May be implemented to read user input
+
+SetTextColor procedure:
+"Sets the foreground and background colors of all subsequent text output to the console."
