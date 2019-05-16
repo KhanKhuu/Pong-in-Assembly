@@ -4,15 +4,23 @@
 include Irvine32.inc
 
 .data
+sampleString byte "Hello World", 0
 GameSpeed dword 1h
 
 GameWidth dword 50h
 GameHeight dword 40h
 
-LeftPlayerX dword 4h
-LeftPlayerY dword 20h
-RightPlayerX dword 40h
-RightPlayerY dword 20h
+Player1X dword 4h
+Player1Y dword 20h
+Player2X dword 40h
+Player2Y dword 20h
+
+Player1MoveUp byte "w", 0
+Player1MoveDown byte "s", 0
+Player2MoveUp byte "o", 0
+Player2MoveDown byte "l", 0
+
+BallDirection dword 90				; in degrees? or slope? 
 
 PlayerColor dword (lightBlue * 16)
 BallColor dword (lightBlue * 16)
