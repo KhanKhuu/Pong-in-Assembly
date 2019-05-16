@@ -4,13 +4,14 @@
 include Irvine32.inc
 
 .data
-sampleString byte "Hello World", 0
+byte space " ", 0
+row 
+
+
 
 .code
 main proc
-     mov edx, offset sampleString
-     call WriteString
-     call crlf
+     call DrawFrame, addr space
      exit
 main endp
 end main

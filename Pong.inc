@@ -3,3 +3,4 @@
 include Irvine.inc
 
 DrawFrame proto
+	space: ptr byte
