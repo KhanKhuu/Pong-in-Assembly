@@ -1,18 +1,20 @@
 ; Title:       Pong 2.0
 ; Authors:     Josiah Turnquist, Matthew Larkins
 
-; This is a test commit.
-
 include Pong.inc
+
+; game board and frame data
+BOARD_TOP_OFFSET equ 5
+BOARD_LEFT_EDGE_OFFSET equ 30
+BOARD_WIDTH equ 50
+BOARD_HEIGHT equ 25
+BORDER_WIDTH equ 1
 
 .data
 welcome byte "hey", 0
 gameSpeed dword 1h
 
-; game board and frame data
-boardWidth dword ?
-boardHeight dword ?
-borderWidth dword ?
+
 
 space byte " ", 0
 
@@ -33,9 +35,7 @@ guiColor dword (blue * 16)
 .code
 main proc
 
-      invoke DrawFrame, boardWidth, boardHeight, borderWidth, addr space
-
-     ;call DrawFrame, addr space,
+     invoke DrawFrame, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
      mov edx, OFFSET welcome
      call WriteString
 MainLoop:

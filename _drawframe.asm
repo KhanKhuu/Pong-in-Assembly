@@ -4,65 +4,66 @@ include Pong.inc
 
 .code
 DrawFrame proc,
-	boardWidth: dword,
+	boardTopOffset: dword,
+	boardLeftEdgeOffset: dword,
+     boardWidth: dword,
 	boardHeight: dword,
 	borderWidth: dword,
 	space: ptr byte
 	
-	; boardWidth will hold the calculated width of the board
-	; boardHeight will hold the calculated height of the board
-	; borderWidth will hold the calculated width of the boarder lines
-	; space is the offset of a space character to be printed to the screen to change the background color
+	; boardTopOffset - distance from the top edge of the console to the top edge of the game board
+     ; boardLeftEdgeOffset - distance from the left edge of the console to the left edge of the game board
+	; boardWidth - width of the board
+	; boardHeight - the height of the board
+	; borderWidth - the width of the boarder lines
+	; space - the offset of a fill character
 
 	pushad
-	mov borderWidth, 1
-
-	; calculate the dimensions of the board according to the console's dimensions
-     mov eax, 0
-     mov edx, 0
-	call GetMaxXY
-	shl dx, 1
-	cmp ax, dx
-	jb WidthSmaller
-HeightSmaller:
-	mov boardWidth, eax
-	shr ax, 1
-	mov boardHeight, eax
-	jmp Done
-WidthSmaller:
-	mov boardWidth, edx
-	shr dx, 1
-	mov boardHeight, edx
-Done: 
-
-	; now we draw the frame
+	     
 	; first, the top border
+     ; set the the background color
 	mov eax, white * 16
 	call SetTextColor
-	mov ecx, boardWidth
+	; place the cursor at the top left edge of the board
+     mov eax, boardTopOffset
+     mov ebx, boardLeftEdgeOffset
+	mov dh, al
+	mov dl, bl
+	call Gotoxy
+	; load edx with the fill character
 	mov edx, space
-L1: call WriteString	
+	; print the borders
+	mov ecx, 2
+L0: push ecx
+	mov ecx, borderWidth
+L1: push ecx
+	mov ecx, boardWidth
+L2: call WriteString	
+	loop L2
+	pop ecx
 	loop L1
+	pop ecx
+     ; place the cursor at the start of the bottom border
+     push eax
+     push edx
+     add eax, boardHeight
+     mov dh, al
+	mov dl, bl
+	call Gotoxy
+     pop edx
+     pop eax
+     ; now repeat to draw the bottom border
+	loop L0
+
 	
-	; skip on down to the bottom
+	; set the text and background colors back to the defaults like a friend
 	mov eax, 0
 	call SetTextColor
-	mov ecx, boardHeight
-L2:	call crlf
-	loop L2
-	
-	; draw the bottom border
-	mov eax, white * 16
-	call SetTextColor
-	mov ecx, boardWidth
-L3: call WriteString
-	loop L3
-     mov eax, 0
-     call SetTextColor
-	call crlf
+     ; move the cursor back to the top left corner of the console
+     mov edx, 0
+     call Gotoxy
 	
 	; and done
-	
 	popad
 	ret
 DrawFrame endp
