@@ -5,26 +5,24 @@ include Irvine32.inc
 
 .data
 sampleString byte "Hello World", 0
-GameSpeed dword 1h
+gameSpeed dword 1h
 
-GameWidth dword 50h
-GameHeight dword 40h
+gameWidth dword 50h
+gameHeight dword 40h
 
-Player1X dword 4h
-Player1Y dword 20h
-Player2X dword 40h
-Player2Y dword 20h
+player1X dword 4h
+player1Y dword 20h
+player2X dword 40h
+player2Y dword 20h
 
-Player1MoveUp byte "w", 0
-Player1MoveDown byte "s", 0
-Player2MoveUp byte "o", 0
-Player2MoveDown byte "l", 0
+controls byte 'w', 's', 'o', 'l', 0			; player 1 up, player 1 down, player 2 up, player 2 down
+paddleHeight dword 4
 
-BallDirection dword 90				; in degrees? or slope? 
+ballDirection dword 90				; in degrees? or slope? 
 
-PlayerColor dword (lightBlue * 16)
-BallColor dword (lightBlue * 16)
-GUIColor dword (blue * 16)
+playerColor dword (lightBlue * 16)
+ballColor dword (lightBlue * 16)
+guiColor dword (blue * 16)
 
 .code
 main proc
