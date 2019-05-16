@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <MASM Include="Pong.asm" />
+    <MASM Include="_drawframe.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Pong.inc" />
@@ -19,6 +20,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4164AA65-1EF9-4E69-899B-D1BED776070B}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Pong</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
