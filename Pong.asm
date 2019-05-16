@@ -38,6 +38,8 @@ main proc
      invoke DrawFrame, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
      mov edx, OFFSET welcome
      call WriteString
+
+     mov ecx, 1
 MainLoop:
 	 ; Do stuff
 	 ; call Clrscr
@@ -45,6 +47,7 @@ MainLoop:
 	 ; call CheckMovement
 	 ; call DrawScreen
 	 ; Call CheckForPoint
+      add ecx 1 ; when the ball goes out of bounds, set ecx to -1 so the inner loop can finsh
 	 loop MainLoop
 	 
 	 
