@@ -3,14 +3,17 @@
 
 ; This is a test commit.
 
-include Irvine32.inc
+include Pong.inc
 
 .data
-sampleString byte "Hello World", 0
 gameSpeed dword 1h
 
-gameWidth dword 50h
-gameHeight dword 40h
+; game board and frame data
+boardWidth dword ?
+boardHeight dword ?
+borderWidth dword ?
+
+space byte " ", 0
 
 player1X dword 4h
 player1Y dword 20h
@@ -28,8 +31,9 @@ guiColor dword (blue * 16)
 
 .code
 main proc
-     call DrawFrame, addr space
-     
+
+      invoke DrawFrame, boardWidth, boardHeight, borderWidth, addr space
+
 MainLoop:
 	 ; Do stuff
 	 ; call Clrscr

@@ -1,14 +1,17 @@
 ; (Pong.inc)
 
-include Irvine.inc
+include Irvine32.inc
 
-DrawFrame proto
+DrawFrame proto,
+	boardWidth: dword,
+	boardHeight: dword,
+	borderWidth: dword,
 	space: ptr byte
 
 CheckMovement proto,
 	p1coord: PTR dword,
 	p2coord: PTR dword,
-	controls: ADDR byte,
+	controls: PTR byte,
 	paddleHeight: PTR dword,
 	roomUpperBorder: PTR dword,
 	roomLowerBorder: PTR dword

@@ -1,11 +1,16 @@
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/15/19 18:16:26
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/15/19 21:01:02
 Pong.asm						     Page 1 - 1
 
 
 				; Title:       Pong 2.0
 				; Authors:     Josiah Turnquist, Matthew Larkins
 
-				include Irvine32.inc
+				; This is a test commit.
+
+				include Pong.inc
+			      C ; (Pong.inc)
+			      C 
+			      C include Irvine32.inc
 			      C ; Include file for Irvine32.lib             (Irvine32.inc)
 			      C 
 			      C ;OPTION CASEMAP:NONE		; optional: make identifiers case-sensitive
@@ -23,23 +28,72 @@ Pong.asm						     Page 1 - 1
 			      C .NOLIST
 			      C .LIST
 			      C 
+			      C 
+			      C DrawFrame proto,
+			      C 	boardWidth: dword,
+			      C 	boardHeight: dword,
+			      C 	borderWidth: dword,
+			      C 	space: ptr byte
+			      C 
+			      C CheckMovement proto,
+			      C 	p1coord: PTR dword,
+			      C 	p2coord: PTR dword,
+			      C 	controls: PTR byte,
+			      C 	paddleHeight: PTR dword,
+			      C 	roomUpperBorder: PTR dword,
+			      C 	roomLowerBorder: PTR dword
+			      C 
 
  00000000			.data
- 00000000 48 65 6C 6C 6F	sampleString byte "Hello World", 0
-	   20 57 6F 72 6C
-	   64 00
+ 00000000 00000001		gameSpeed dword 1h
+
+				; game board and frame data
+ 00000004 00000000		boardWidth dword ?
+ 00000008 00000000		boardHeight dword ?
+ 0000000C 00000000		borderWidth dword ?
+
+ 00000010 20 00			space byte " ", 0
+
+ 00000012 00000004		player1X dword 4h
+ 00000016 00000020		player1Y dword 20h
+ 0000001A 00000040		player2X dword 40h
+ 0000001E 00000020		player2Y dword 20h
+
+ 00000022 77 73 6F 6C 00	controls byte 'w', 's', 'o', 'l', 0			; player 1 up, player 1 down, player 2 up, player 2 down
+ 00000027 00000004		paddleHeight dword 4
+
+ 0000002B 0000005A		ballDirection dword 90				; in degrees? or slope? 
+
+ 0000002F 00000090		playerColor dword (lightBlue * 16)
+ 00000033 00000090		ballColor dword (lightBlue * 16)
+ 00000037 00000010		guiColor dword (blue * 16)
 
  00000000			.code
  00000000			main proc
- 00000000  BA 00000000 R	     mov edx, offset sampleString
- 00000005  E8 00000000 E	     call WriteString
- 0000000A  E8 00000000 E	     call crlf
+
+				      invoke DrawFrame, boardWidth, boardHeight, borderWidth, addr space
+ 00000000  68 00000010 R   *	    push   OFFSET space
+ 00000005  FF 35 0000000C R *	    push   borderWidth
+ 0000000B  FF 35 00000008 R *	    push   boardHeight
+ 00000011  FF 35 00000004 R *	    push   boardWidth
+ 00000017  E8 00000000 E   *	    call   DrawFrame
+
+ 0000001C			MainLoop:
+					 ; Do stuff
+					 ; call Clrscr
+					 ; call MoveBall
+					 ; call CheckMovement
+					 ; call DrawScreen
+					 ; Call CheckForPoint
+ 0000001C  E2 FE			 loop MainLoop
+					 
+					 
 				     exit
- 0000000F  6A 00	   *	    push   +000000000h
- 00000011  E8 00000000 E   *	    call   ExitProcess
- 00000016			main endp
+ 0000001E  6A 00	   *	    push   +000000000h
+ 00000020  E8 00000000 E   *	    call   ExitProcess
+ 00000025			main endp
 				end main
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/15/19 18:16:26
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/15/19 21:01:02
 Pong.asm						     Symbols 2 - 1
 
 
@@ -133,14 +187,15 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000000C Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000016 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000003B Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000025 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
 
                 N a m e                 Type     Value    Attr
 
+CheckMovement  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 CloseFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Clrscr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -148,6 +203,7 @@ CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DrawFrame  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -241,7 +297,8 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000016 Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000025 Public STDCALL
+  MainLoop . . . . . . . . . . .	L Near	 0000001C _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -460,13 +517,21 @@ VK_UP  . . . . . . . . . . . . .	Number	 00000026h
 WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
 WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
 WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+ballColor  . . . . . . . . . . .	DWord	 00000033 _DATA	
+ballDirection  . . . . . . . . .	DWord	 0000002B _DATA	
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
+boardHeight  . . . . . . . . . .	DWord	 00000008 _DATA	
+boardWidth . . . . . . . . . . .	DWord	 00000004 _DATA	
+borderWidth  . . . . . . . . . .	DWord	 0000000C _DATA	
 brown  . . . . . . . . . . . . .	Number	 00000006h   
+controls . . . . . . . . . . . .	Byte	 00000022 _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gameSpeed  . . . . . . . . . . .	DWord	 00000000 _DATA	
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
+guiColor . . . . . . . . . . . .	DWord	 00000037 _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -474,8 +539,14 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
+paddleHeight . . . . . . . . . .	DWord	 00000027 _DATA	
+player1X . . . . . . . . . . . .	DWord	 00000012 _DATA	
+player1Y . . . . . . . . . . . .	DWord	 00000016 _DATA	
+player2X . . . . . . . . . . . .	DWord	 0000001A _DATA	
+player2Y . . . . . . . . . . . .	DWord	 0000001E _DATA	
+playerColor  . . . . . . . . . .	DWord	 0000002F _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
-sampleString . . . . . . . . . .	Byte	 00000000 _DATA	
+space  . . . . . . . . . . . . .	Byte	 00000010 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   
