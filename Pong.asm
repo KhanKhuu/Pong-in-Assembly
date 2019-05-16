@@ -5,6 +5,15 @@ include Irvine32.inc
 
 .data
 sampleString byte "Hello World", 0
+GameSpeed dword 1h
+
+GameWidth dword 50h
+GameHeight dword 40h
+
+LeftPlayerX dword 4h
+LeftPlayerY dword 20h
+RightPlayerX dword 40h
+RightPlayerY dword 20h
 
 .code
 main proc
