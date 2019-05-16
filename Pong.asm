@@ -15,6 +15,10 @@ LeftPlayerY dword 20h
 RightPlayerX dword 40h
 RightPlayerY dword 20h
 
+PlayerColor dword (?)
+BallColor dword (?)
+GUIColor dword(?)
+
 .code
 main proc
      mov edx, offset sampleString
