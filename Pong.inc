@@ -4,7 +4,6 @@ include Irvine.inc
 
 DrawFrame proto
 	space: ptr byte
-DrawFrame proto
 
 CheckMovement proto,
 	p1coord: PTR dword,
