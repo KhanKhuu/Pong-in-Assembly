@@ -4,7 +4,6 @@
 include Irvine32.inc
 
 .data
-sampleString byte "Hello World", 0
 GameSpeed dword 1h
 
 GameWidth dword 50h
@@ -15,15 +14,23 @@ LeftPlayerY dword 20h
 RightPlayerX dword 40h
 RightPlayerY dword 20h
 
-PlayerColor dword (?)
-BallColor dword (?)
-GUIColor dword(?)
+PlayerColor dword (lightBlue * 16)
+BallColor dword (lightBlue * 16)
+GUIColor dword (blue * 16)
 
 .code
 main proc
-     mov edx, offset sampleString
-     call WriteString
-     call crlf
+     
+MainLoop:
+	 ; Do stuff
+	 ; call Clrscr
+	 ; call MoveBall
+	 ; call CheckMovement
+	 ; call DrawScreen
+	 ; Call CheckForPoint
+	 loop MainLoop
+	 
+	 
      exit
 main endp
 end main
