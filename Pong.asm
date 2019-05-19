@@ -14,7 +14,7 @@ GUI_COLOR equ (blue * 16)
 PADDLE_COLOR equ (white * 16)
 BALL_COLOR equ (white * 16)
 
-FRAME_RATE equ 150d
+FRAME_RATE equ 50d
 
 .data
 welcome byte "hey", 0
@@ -27,7 +27,7 @@ roomLowerBorder dword (BOARD_TOP_OFFSET + BOARD_HEIGHT)
 ; ball and paddle tracking
 xCoordBall dword BOARD_LEFT_EDGE_OFFSET
 yCoordBall dword BOARD_TOP_OFFSET + 2
-xRun dword 1
+xRun dword 2
 yRise dword 1
 
 ; character
@@ -62,20 +62,15 @@ main proc
 
      mov ecx, 1
 MainLoop:
-	 ; Do stuff
-	 ; call Clrscr
-	 ; call MoveBall
-	 ; call CheckMovement
-	 ; call DrawScreen
-	 ; Call CheckForPoint
-	 invoke UpdateBall, addr xCoordBall, addr yCoordBall, addr xRun, addr yRise, addr space, BOARD_TOP_OFFSET, BOARD_HEIGHT,
-        player1X, player1Y, player2X, player2Y, paddleHeight
+	 invoke UpdateBall, addr xCoordBall, addr yCoordBall, BALL_COLOR, addr xRun, addr yRise, addr space, BOARD_TOP_OFFSET, 
+                        BOARD_HEIGHT, player1X, player1Y, player2X, player2Y, paddleHeight
      inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to 0 so the inner loop can finish
      invoke Chill, FRAME_RATE
 
      ; check for movement and redraw paddle accordingly
-     invoke CheckMovement, PADDLE_COLOR, addr player1x, addr player1Y, addr player2X, addr player2y, paddleHeight, roomUpperBorder, roomLowerBorder
-	loop MainLoop
+     invoke CheckMovement, PADDLE_COLOR, addr player1x, addr player1Y, addr player2X, addr player2y, paddleHeight, 
+                            roomUpperBorder, roomLowerBorder
+	jmp MainLoop
 	
 	
      exit

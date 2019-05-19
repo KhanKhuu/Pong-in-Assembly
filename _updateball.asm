@@ -4,9 +4,9 @@ include Pong.inc
 
 .code
 UpdateBall proc,
-     color: dword,
 	xCoordBall: ptr dword,
 	yCoordBall: ptr dword,
+    color: dword,
 	xRun: ptr dword,
 	yRise: ptr dword,
 	space: ptr byte,
@@ -22,10 +22,19 @@ UpdateBall proc,
 	; yCoordBall - the current absolute y coordinate of the ball
 	; xRun - the x (horizontal) component of the ball's velocity
 	; yRise - the y (vertical) component of the ball's velocity
-		; note : a positive yRise value translates to downward motiuon of the ball on the consoloe and vice-versa
+		; note : a positive yRise value translates to downward motion of the ball on the consoloe and vice-versa
 	
 	; save the state of the registers from the time of the function call
 	pushad
+
+    ; if the ball is beyond the paddles, let it go checking that here
+    mov eax, xCoordBall
+	mov ebx, rightPaddleX
+	cmp [eax], ebx
+	ja UpdateCoords
+	mov ebx, leftPaddleX
+	cmp [eax], ebx
+	jb UpdateCoords
 
     ; check whether the ball is touching either frame
     ; bottom frame
@@ -102,7 +111,7 @@ NotTouchingRightPaddle:
 	neg dword ptr [eax]
 	
 NotTouchingLeftPaddle:
-	
+UpdateCoords:
 	; update the x- and y-coordinates of the ball
 	; x
 	mov eax, [xRun]
@@ -125,7 +134,7 @@ NotTouchingLeftPaddle:
 	call Gotoxy
 	
 	; change the fill color to white to represent the ball with a white-filled space
-	mov eax, white * 16
+	mov eax, color
 	call SetTextColor
 	
 	; print a space character to print the ball as a white space
