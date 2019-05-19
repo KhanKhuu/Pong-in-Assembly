@@ -47,7 +47,7 @@ MainLoop:
 	 ; call CheckMovement
 	 ; call DrawScreen
 	 ; Call CheckForPoint
-      add ecx 1 ; when the ball goes out of bounds, set ecx to -1 so the inner loop can finsh
+       inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to 0 so the inner loop can finish
 	 loop MainLoop
 	 
 	 

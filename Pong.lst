@@ -1,8 +1,9 @@
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/16/19 00:45:41
-_drawframe.asm						     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 18:15:15
+Pong.asm						     Page 1 - 1
 
 
-				; (_drawframe.asm)
+				; Title:       Pong 2.0
+				; Authors:     Josiah Turnquist, Matthew Larkins
 
 				include Pong.inc
 			      C ; (Pong.inc)
@@ -44,80 +45,68 @@ _drawframe.asm						     Page 1 - 1
 			      C  
 			      C 
 
+				; game board and frame data
+ = 00000005			BOARD_TOP_OFFSET equ 5
+ = 0000001E			BOARD_LEFT_EDGE_OFFSET equ 30
+ = 00000032			BOARD_WIDTH equ 50
+ = 00000019			BOARD_HEIGHT equ 25
+ = 00000001			BORDER_WIDTH equ 1
+
+ 00000000			.data
+ 00000000 68 65 79 00		welcome byte "hey", 0
+ 00000004 00000001		gameSpeed dword 1h
+
+
+
+ 00000008 20 00			space byte " ", 0
+
+ 0000000A 00000004		player1X dword 4h
+ 0000000E 00000020		player1Y dword 20h
+ 00000012 00000040		player2X dword 40h
+ 00000016 00000020		player2Y dword 20h
+
+ 0000001A 77 73 6F 6C 00	controls byte 'w', 's', 'o', 'l', 0			; player 1 up, player 1 down, player 2 up, player 2 down
+ 0000001F 00000004		paddleHeight dword 4
+
+ 00000023 0000005A		ballDirection dword 90				; in degrees? or slope? 
+
+ 00000027 00000090		playerColor dword (lightBlue * 16)
+ 0000002B 00000090		ballColor dword (lightBlue * 16)
+ 0000002F 00000010		guiColor dword (blue * 16)
+
  00000000			.code
- 00000000			DrawFrame proc,
-					boardTopOffset: dword,
-					boardLeftEdgeOffset: dword,
-				     boardWidth: dword,
-					boardHeight: dword,
-					borderWidth: dword,
-					space: ptr byte
-					
-					; boardTopOffset - distance from the top edge of the console to the top edge of the game board
-				     ; boardLeftEdgeOffset - distance from the left edge of the console to the left edge of the game board
-					; boardWidth - width of the board
-					; boardHeight - the height of the board
-					; borderWidth - the width of the boarder lines
-					; space - the offset of a fill character
+ 00000000			main proc
 
- 00000000  55		   *	    push   ebp
- 00000001  8B EC	   *	    mov    ebp, esp
- 00000003  60				pushad
-					     
-					; first, the top border
-				     ; set the the background color
- 00000004  B8 000000F0			mov eax, white * 16
- 00000009  E8 00000000 E		call SetTextColor
-					; place the cursor at the top left edge of the board
- 0000000E  8B 45 08		     mov eax, boardTopOffset
- 00000011  8B 5D 0C		     mov ebx, boardLeftEdgeOffset
- 00000014  8A F0			mov dh, al
- 00000016  8A D3			mov dl, bl
- 00000018  E8 00000000 E		call Gotoxy
-					; load edx with the fill character
- 0000001D  8B 55 1C			mov edx, space
-					; print the borders
- 00000020  B9 00000002			mov ecx, 2
- 00000025  51			L0: push ecx
- 00000026  8B 4D 18			mov ecx, borderWidth
- 00000029  51			L1: push ecx
- 0000002A  8B 4D 10			mov ecx, boardWidth
- 0000002D  E8 00000000 E	L2: call WriteString	
- 00000032  E2 F9			loop L2
- 00000034  59				pop ecx
- 00000035  E2 F2			loop L1
- 00000037  59				pop ecx
-				     ; place the cursor at the start of the bottom border
- 00000038  50			     push eax
- 00000039  52			     push edx
- 0000003A  03 45 14		     add eax, boardHeight
- 0000003D  8A F0		     mov dh, al
- 0000003F  8A D3			mov dl, bl
- 00000041  E8 00000000 E		call Gotoxy
- 00000046  5A			     pop edx
- 00000047  58			     pop eax
-				     ; now repeat to draw the bottom border
- 00000048  E2 DB			loop L0
+				     invoke DrawFrame, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
+ 00000000  68 00000008 R   *	    push   OFFSET space
+ 00000005  6A 01	   *	    push   +000000001h
+ 00000007  6A 19	   *	    push   +000000019h
+ 00000009  6A 32	   *	    push   +000000032h
+ 0000000B  6A 1E	   *	    push   +00000001Eh
+ 0000000D  6A 05	   *	    push   +000000005h
+ 0000000F  E8 00000000 E   *	    call   DrawFrame
+ 00000014  BA 00000000 R	     mov edx, OFFSET welcome
+ 00000019  E8 00000000 E	     call WriteString
 
-					
-					; set the text and background colors back to the defaults like a friend
- 0000004A  B8 00000000			mov eax, 0
- 0000004F  E8 00000000 E		call SetTextColor
-				     ; move the cursor back to the top left corner of the console
- 00000054  BA 00000000		     mov edx, 0
- 00000059  E8 00000000 E	     call Gotoxy
-					
-					; and done
- 0000005E  61				popad
-					ret
- 0000005F  C9		   *	    leave  
- 00000060  C2 0018	   *	    ret    00018h
- 00000063			DrawFrame endp
-				end
-					
-					
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/16/19 00:45:41
-_drawframe.asm						     Symbols 2 - 1
+ 0000001E  B9 00000001		     mov ecx, 1
+ 00000023			MainLoop:
+					 ; Do stuff
+					 ; call Clrscr
+					 ; call MoveBall
+					 ; call CheckMovement
+					 ; call DrawScreen
+					 ; Call CheckForPoint
+ 00000023  41			       inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to -1 so the inner loop can finish
+ 00000024  E2 FD			 loop MainLoop
+					 
+					 
+				     exit
+ 00000026  6A 00	   *	    push   +000000000h
+ 00000028  E8 00000000 E   *	    call   ExitProcess
+ 0000002D			main endp
+				end main
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 18:15:15
+Pong.asm						     Symbols 2 - 1
 
 
 
@@ -210,8 +199,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000063 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000033 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000002D Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -226,16 +215,7 @@ CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-DrawFrame  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000063 Public STDCALL
-  boardTopOffset . . . . . . . .	DWord	 bp + 00000008
-  boardLeftEdgeOffset  . . . . .	DWord	 bp + 0000000C
-  boardWidth . . . . . . . . . .	DWord	 bp + 00000010
-  boardHeight  . . . . . . . . .	DWord	 bp + 00000014
-  borderWidth  . . . . . . . . .	DWord	 bp + 00000018
-  space  . . . . . . . . . . . .	DWord	 bp + 0000001C
-  L0 . . . . . . . . . . . . . .	L Near	 00000025 _TEXT	
-  L1 . . . . . . . . . . . . . .	L Near	 00000029 _TEXT	
-  L2 . . . . . . . . . . . . . .	L Near	 0000002D _TEXT	
+DrawFrame  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -329,6 +309,8 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000002D Public STDCALL
+  MainLoop . . . . . . . . . . .	L Near	 00000023 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -348,6 +330,11 @@ Symbols:
 @fardata . . . . . . . . . . . .	Text   	 FLAT
 @stack . . . . . . . . . . . . .	Text   	 FLAT
 ALT_MASK . . . . . . . . . . . .	Number	 00000003h   
+BOARD_HEIGHT . . . . . . . . . .	Number	 00000019h   
+BOARD_LEFT_EDGE_OFFSET . . . . .	Number	 0000001Eh   
+BOARD_TOP_OFFSET . . . . . . . .	Number	 00000005h   
+BOARD_WIDTH  . . . . . . . . . .	Number	 00000032h   
+BORDER_WIDTH . . . . . . . . . .	Number	 00000001h   
 CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h   
 CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
 CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
@@ -547,13 +534,18 @@ VK_UP  . . . . . . . . . . . . .	Number	 00000026h
 WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
 WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
 WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+ballColor  . . . . . . . . . . .	DWord	 0000002B _DATA	
+ballDirection  . . . . . . . . .	DWord	 00000023 _DATA	
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
+controls . . . . . . . . . . . .	Byte	 0000001A _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gameSpeed  . . . . . . . . . . .	DWord	 00000004 _DATA	
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
+guiColor . . . . . . . . . . . .	DWord	 0000002F _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -561,7 +553,15 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
+paddleHeight . . . . . . . . . .	DWord	 0000001F _DATA	
+player1X . . . . . . . . . . . .	DWord	 0000000A _DATA	
+player1Y . . . . . . . . . . . .	DWord	 0000000E _DATA	
+player2X . . . . . . . . . . . .	DWord	 00000012 _DATA	
+player2Y . . . . . . . . . . . .	DWord	 00000016 _DATA	
+playerColor  . . . . . . . . . .	DWord	 00000027 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
+space  . . . . . . . . . . . . .	Byte	 00000008 _DATA	
+welcome  . . . . . . . . . . . .	Byte	 00000000 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   
