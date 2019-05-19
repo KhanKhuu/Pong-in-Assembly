@@ -4,6 +4,7 @@ include Pong.inc
 
 .code
 UpdateBall proc,
+     color: dword,
 	xCoordBall: ptr dword,
 	yCoordBall: ptr dword,
 	xRun: ptr dword,
@@ -189,3 +190,5 @@ NotTouchingLeftPaddle:
 
 UpdateBall endp
 end
+	
+	

@@ -9,9 +9,12 @@ BOARD_LEFT_EDGE_OFFSET equ 15d
 BOARD_WIDTH equ 70d
 BOARD_HEIGHT equ 20d
 BORDER_WIDTH equ 1d
+GUI_TEXT_COLOR equ (white)
+GUI_COLOR equ (blue * 16)
+PADDLE_COLOR equ (white * 16)
+BALL_COLOR equ (white * 16)
+
 FRAME_RATE equ 150d
-
-
 
 .data
 welcome byte "hey", 0
@@ -24,7 +27,7 @@ roomLowerBorder dword (BOARD_TOP_OFFSET + BOARD_HEIGHT)
 ; ball and paddle tracking
 xCoordBall dword BOARD_LEFT_EDGE_OFFSET
 yCoordBall dword BOARD_TOP_OFFSET + 2
-xRun dword 2
+xRun dword 1
 yRise dword 1
 
 ; character
@@ -51,56 +54,9 @@ p2score dword 0
 main proc
      mov eax, 0
      call SetTextColor
-     invoke DrawFrame, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
-     mov edx, OFFSET welcome
-     call WriteString
+     invoke DrawFrame, GUI_COLOR, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
 
-                         ; draw initial pong paddle player 1
-     pushad
-     mov edx, 0
-     mov dl, byte PTR [player1X]
-     mov dh, byte PTR [player1Y]
-     mov ecx, paddleHeight
-initialDrawP1:
-     call Gotoxy
-     mov eax, blue * 16
-     call SetTextColor
-
-     push edx
-     mov edx, OFFSET space
-     call WriteString
-     pop edx
-     dec dh
-     loop initialDrawP1
-
-     mov eax, 0
-     call SetTextColor
-     popad
-
-                         ; finish draw initial pong paddle player 1
-
-                         ; draw initial pong paddle player 2
-     pushad
-     mov dl, byte PTR [player2X]
-     mov dh, byte PTR [player2Y]
-     mov ecx, paddleHeight
-initialDrawP2:
-     call Gotoxy
-     mov eax, blue * 16
-     call SetTextColor
-
-     push edx
-     mov edx, OFFSET space
-     call WriteString
-     pop edx
-     dec dh
-     loop initialDrawP2
-
-     mov eax, 0
-     call SetTextColor
-     popad
-
-                         ; finish draw initial pong paddle player 2
+     invoke DrawInitialPaddles, PADDLE_COLOR, addr player1X, addr player1Y, addr player2X, addr player2Y, addr paddleHeight, addr space
 
      mov ecx, 1
 MainLoop:
@@ -114,13 +70,12 @@ MainLoop:
         player1X, player1Y, player2X, player2Y, paddleHeight
      inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to 0 so the inner loop can finish
      invoke Chill, FRAME_RATE
-     ; check for movement and redraw paddle accordingly
-     invoke CheckMovement, addr player1x, addr player1Y, addr player2X, addr player2y, paddleHeight, roomUpperBorder, roomLowerBorder
 
-      add ecx, 1 ; when the ball goes out of bounds, set ecx to -1 so the inner loop can finish
-	 loop MainLoop
-	 
-	 
+     ; check for movement and redraw paddle accordingly
+     invoke CheckMovement, PADDLE_COLOR, addr player1x, addr player1Y, addr player2X, addr player2y, paddleHeight, roomUpperBorder, roomLowerBorder
+	loop MainLoop
+	
+	
      exit
 main endp
 end main
