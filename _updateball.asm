@@ -4,6 +4,7 @@ include Pong.inc
 
 .code
 UpdateBall proc,
+     color: dword,
 	xCoordBall: ptr dword,
 	yCoordBall: ptr dword,
 	xRun: ptr dword,
@@ -21,12 +22,12 @@ UpdateBall proc,
 	; save the state of the registers from the time of the function call
 	pushad
 
-    ; check whether the ball is touching either frame
-    ; bottom frame
+     ; check whether the ball is touching either frame
+     ; bottom frame
 	mov eax, [yCoordBall]
 	mov ebx, boardTopOffset
 	add ebx, boardHeight
-    dec ebx
+     dec ebx
 	cmp [eax], ebx
 	jb NotTouchingBottom
 	mov eax, [yRise]
@@ -34,7 +35,7 @@ UpdateBall proc,
 	
 NotTouchingBottom:
 	; top frame
-    mov eax, [yCoordBall]
+     mov eax, [yCoordBall]
 	mov ebx, boardTopOffset
 	inc ebx
 	cmp [eax], ebx
@@ -49,9 +50,9 @@ NotTouchingTop:
 	; update the x- and y-coordinates of the ball
 	; x
 	mov eax, [xRun]
-    mov ebx, [eax]
-    mov eax, [xCoordBall]
-    add ebx, [eax]
+     mov ebx, [eax]
+     mov eax, [xCoordBall]
+     add ebx, [eax]
 	mov [eax], ebx
 	; y
 	mov eax, [yRise]
@@ -68,7 +69,7 @@ NotTouchingTop:
 	call Gotoxy
 	
 	; change the fill color to white to represent the ball with a white-filled space
-	mov eax, white * 16
+	mov eax, color
 	call SetTextColor
 	
 	; print a space character to print the ball as a white space
