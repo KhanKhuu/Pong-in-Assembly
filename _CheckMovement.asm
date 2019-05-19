@@ -6,6 +6,7 @@ space byte " ", 0
 
 .code 
 CheckMovement proc,
+     color: dword,
 	p1coordx: PTR dword,						; x-coord
 	p1coordy: PTR dword,						; y-coord
 	p2coordx: PTR dword,						; x-coord
@@ -55,7 +56,7 @@ CheckUpKeyP1:                                ; eax = p1coordy
      mov dh, byte PTR [eax]                  ; y coordinate
      sub dh, byte PTR [paddleHeight]
      call Gotoxy
-     mov eax, (blue * 16)                    ; bg_color = black
+     mov eax, color                    ; bg_color = black
      call SetTextColor
      mov edx, OFFSET space
      call WriteString                        ; clear bottom line
@@ -91,7 +92,7 @@ CheckDownKeyP1:
      mov eax, p1coordy
      mov dh, byte PTR [eax]                  ; y coordinate
      call Gotoxy
-     mov eax, (blue * 16)                    ; bg_color = blue
+     mov eax, color                    ; bg_color = color
      call SetTextColor
 
      mov edx, OFFSET space
@@ -125,7 +126,7 @@ CheckUpKeyP2:                                ; eax = p2coordy
      mov dh, byte PTR [eax]                  ; y coordinate
      sub dh, byte PTR [paddleHeight]
      call Gotoxy
-     mov eax, (blue * 16)                    ; bg_color = black
+     mov eax, color                    ; bg_color = black
      call SetTextColor
      mov edx, OFFSET space
      call WriteString                        ; clear bottom line
@@ -161,7 +162,7 @@ CheckDownKeyP2:
      mov eax, p2coordy
      mov dh, byte PTR [eax]                  ; y coordinate
      call Gotoxy
-     mov eax, (blue * 16)                    ; bg_color = blue
+     mov eax, color                    ; bg_color = color
      call SetTextColor
 
      mov edx, OFFSET space
