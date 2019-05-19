@@ -34,7 +34,6 @@ player1Y dword (BOARD_TOP_OFFSET + (BOARD_HEIGHT / 2))
 player2X dword (BOARD_LEFT_EDGE_OFFSET + BOARD_WIDTH - 1)
 player2Y dword (BOARD_TOP_OFFSET + (BOARD_HEIGHT / 2))
 
-controls byte 'w', 's', 'o', 'l', 0			; player 1 up, player 1 down, player 2 up, player 2 down
 paddleHeight dword 4h
 
 ballDirection dword 90				; in degrees? or slope? 
@@ -101,7 +100,7 @@ initialDrawP2:
      mov ecx, 1
 MainLoop:
      ; check for movement and redraw paddle accordingly
-      invoke CheckMovement, addr player1x, addr player1Y, addr player2X, addr player2y, addr controls, paddleHeight, roomUpperBorder, roomLowerBorder
+      invoke CheckMovement, addr player1x, addr player1Y, addr player2X, addr player2y, paddleHeight, roomUpperBorder, roomLowerBorder
 
       add ecx, 1 ; when the ball goes out of bounds, set ecx to -1 so the inner loop can finish
 	 loop MainLoop
