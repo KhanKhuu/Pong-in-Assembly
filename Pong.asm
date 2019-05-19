@@ -110,11 +110,12 @@ MainLoop:
 	 ; call CheckMovement
 	 ; call DrawScreen
 	 ; Call CheckForPoint
-	 invoke UpdateBall, addr xCoordBall, addr yCoordBall, addr xRun, addr yRise, addr space, BOARD_TOP_OFFSET, BOARD_HEIGHT
+	 invoke UpdateBall, addr xCoordBall, addr yCoordBall, addr xRun, addr yRise, addr space, BOARD_TOP_OFFSET, BOARD_HEIGHT,
+        player1X, player1Y, player2X, player2Y, paddleHeight
      inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to 0 so the inner loop can finish
      invoke Chill, FRAME_RATE
      ; check for movement and redraw paddle accordingly
-      invoke CheckMovement, addr player1x, addr player1Y, addr player2X, addr player2y, paddleHeight, roomUpperBorder, roomLowerBorder
+     invoke CheckMovement, addr player1x, addr player1Y, addr player2X, addr player2y, paddleHeight, roomUpperBorder, roomLowerBorder
 
       add ecx, 1 ; when the ball goes out of bounds, set ecx to -1 so the inner loop can finish
 	 loop MainLoop

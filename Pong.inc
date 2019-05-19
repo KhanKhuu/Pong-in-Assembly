@@ -26,7 +26,12 @@ CheckMovement proto,
 	yRise: ptr dword,
 	space: ptr byte,
 	boardTopOffset: dword,
-	boardHeight: dword
+	boardHeight: dword,
+    leftPaddleX: dword,
+    leftPaddleY: dword,
+    rightPaddleX: dword,
+    rightPaddleY: dword,
+	paddleHeight: dword
  
 Chill proto,
      duration: dword

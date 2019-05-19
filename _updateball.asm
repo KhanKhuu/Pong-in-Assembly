@@ -10,7 +10,12 @@ UpdateBall proc,
 	yRise: ptr dword,
 	space: ptr byte,
 	boardTopOffset: dword,
-	boardHeight: dword
+	boardHeight: dword,
+    leftPaddleX: dword,
+    leftPaddleY: dword,
+    rightPaddleX: dword,
+    rightPaddleY: dword,
+	paddleHeight: dword
 	
 	; xCoordBall - the current absolute x coordinate of the ball 
 	; yCoordBall - the current absolute y coordinate of the ball
@@ -43,8 +48,59 @@ NotTouchingBottom:
 	neg dword ptr [eax]
 	
 NotTouchingTop:
+	; check whether the ball is touching either paddle
+	; right paddle
+	; first decide whether the ball's x-value is equal to the right paddle's x-value
+	mov eax, rightPaddleX
+	mov ebx, eax
+	dec ebx
+	mov eax, [xCoordBall]
+	cmp [eax], ebx
+	jb NotTouchingRightPaddle
+	; ball is potentially touching the right paddle - now check whether the ball's y-value is within the paddle's y-range
+	; ball is not touching if it is below the paddle - checking that here
+	mov eax, rightPaddleY
+	mov ebx, eax
+	mov eax, [yCoordBall]
+	cmp [eax], ebx
+	ja NotTouchingRightPaddle
+	; ball is not touching if it is above the paddle - checking that here
+	mov eax, rightPaddleY
+	mov ebx, eax
+	sub ebx, paddleHeight
+	mov eax, [yCoordBall]
+	cmp [eax], ebx
+	jb NotTouchingRightPaddle
+	mov eax, [xRun]
+	neg dword ptr [eax]
 	
+NotTouchingRightPaddle:
+	; now check the left paddle
+	; first decide whether the ball's x-value is equal to the left paddle's x-value
+	mov eax, leftPaddleX
+	mov ebx, eax
+    add ebx, 2
+	mov eax, [xCoordBall]
+	cmp [eax], ebx
+	ja NotTouchingLeftPaddle
+	; ball is potentially touching the left paddle - now check whether the ball's y-value is within the paddle's y-range
+	; ball is not touching if it is below the paddle - checking that here
+	mov eax, leftPaddleY
+	mov ebx, eax
+	mov eax, [yCoordBall]
+	cmp [eax], ebx
+	ja NotTouchingLeftPaddle
+	; ball is not touching if it is above the paddle - checking that here
+	mov eax, leftPaddleY
+	mov ebx, eax
+	sub ebx, paddleHeight
+	mov eax, [yCoordBall]
+	cmp [eax], ebx
+	jb NotTouchingLeftPaddle
+	mov eax, [xRun]
+	neg dword ptr [eax]
 	
+NotTouchingLeftPaddle:
 	
 	; update the x- and y-coordinates of the ball
 	; x
@@ -133,5 +189,3 @@ NotTouchingTop:
 
 UpdateBall endp
 end
-	
-	
