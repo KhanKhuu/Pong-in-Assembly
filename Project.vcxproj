@@ -12,7 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <MASM Include="Pong.asm" />
+    <MASM Include="_chill.asm" />
     <MASM Include="_drawframe.asm" />
+    <MASM Include="_updateball.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Pong.inc" />

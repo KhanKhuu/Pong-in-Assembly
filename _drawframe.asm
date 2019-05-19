@@ -6,7 +6,7 @@ include Pong.inc
 DrawFrame proc,
 	boardTopOffset: dword,
 	boardLeftEdgeOffset: dword,
-     boardWidth: dword,
+    boardWidth: dword,
 	boardHeight: dword,
 	borderWidth: dword,
 	space: ptr byte
@@ -21,12 +21,12 @@ DrawFrame proc,
 	pushad
 	     
 	; first, the top border
-     ; set the the background color
+    ; set the the background color
 	mov eax, white * 16
 	call SetTextColor
 	; place the cursor at the top left edge of the board
-     mov eax, boardTopOffset
-     mov ebx, boardLeftEdgeOffset
+    mov eax, boardTopOffset
+    mov ebx, boardLeftEdgeOffset
 	mov dh, al
 	mov dl, bl
 	call Gotoxy
@@ -43,25 +43,25 @@ L2: call WriteString
 	pop ecx
 	loop L1
 	pop ecx
-     ; place the cursor at the start of the bottom border
-     push eax
-     push edx
-     add eax, boardHeight
-     mov dh, al
+    ; place the cursor at the start of the bottom border
+    push eax
+    push edx
+    add eax, boardHeight
+    mov dh, al
 	mov dl, bl
 	call Gotoxy
-     pop edx
-     pop eax
-     ; now repeat to draw the bottom border
+    pop edx
+    pop eax
+    ; now repeat to draw the bottom border
 	loop L0
 
 	
 	; set the text and background colors back to the defaults like a friend
 	mov eax, 0
 	call SetTextColor
-     ; move the cursor back to the top left corner of the console
-     mov edx, 0
-     call Gotoxy
+    ; move the cursor back to the top left corner of the console
+    mov edx, 0
+    call Gotoxy
 	
 	; and done
 	popad

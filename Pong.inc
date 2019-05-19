@@ -3,9 +3,9 @@
 include Irvine32.inc
 
 DrawFrame proto,
-     boardTopOffset: dword,
+    boardTopOffset: dword,
 	boardLeftEdgeOffset: dword,
-     boardWidth: dword,
+    boardWidth: dword,
 	boardHeight: dword,
 	borderWidth: dword,
 	space: ptr byte
@@ -18,8 +18,14 @@ CheckMovement proto,
 	roomUpperBorder: PTR dword,
 	roomLowerBorder: PTR dword
  
- DrawBall proto,
-      xCoordBall: ptr dword,
-      yCoordBall: ptr dword,
-      xRun: ptr dword,
-	  yRise: ptr dword
+ UpdateBall proto,
+    xCoordBall: ptr dword,
+    yCoordBall: ptr dword,
+    xRun: ptr dword,
+	yRise: ptr dword,
+	space: ptr byte,
+	boardTopOffset: dword,
+	boardHeight: dword
+ 
+Chill proto,
+     duration: dword

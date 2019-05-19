@@ -1,9 +1,8 @@
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 18:15:15
-Pong.asm						     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 21:25:05
+_updateball.asm						     Page 1 - 1
 
 
-				; Title:       Pong 2.0
-				; Authors:     Josiah Turnquist, Matthew Larkins
+				; (_updateball.asm)
 
 				include Pong.inc
 			      C ; (Pong.inc)
@@ -28,9 +27,9 @@ Pong.asm						     Page 1 - 1
 			      C 
 			      C 
 			      C DrawFrame proto,
-			      C      boardTopOffset: dword,
+			      C     boardTopOffset: dword,
 			      C 	boardLeftEdgeOffset: dword,
-			      C      boardWidth: dword,
+			      C     boardWidth: dword,
 			      C 	boardHeight: dword,
 			      C 	borderWidth: dword,
 			      C 	space: ptr byte
@@ -43,70 +42,158 @@ Pong.asm						     Page 1 - 1
 			      C 	roomUpperBorder: PTR dword,
 			      C 	roomLowerBorder: PTR dword
 			      C  
+			      C  UpdateBall proto,
+			      C     xCoordBall: ptr dword,
+			      C     yCoordBall: ptr dword,
+			      C     xRun: ptr dword,
+			      C 	yRise: ptr dword,
+			      C 	space: ptr byte,
+			      C 	boardTopOffset: dword,
+			      C 	boardHeight: dword
+			      C  
+			      C Chill proto,
+			      C      duration: dword
 			      C 
 
-				; game board and frame data
- = 00000005			BOARD_TOP_OFFSET equ 5
- = 0000001E			BOARD_LEFT_EDGE_OFFSET equ 30
- = 00000032			BOARD_WIDTH equ 50
- = 00000019			BOARD_HEIGHT equ 25
- = 00000001			BORDER_WIDTH equ 1
-
- 00000000			.data
- 00000000 68 65 79 00		welcome byte "hey", 0
- 00000004 00000001		gameSpeed dword 1h
-
-
-
- 00000008 20 00			space byte " ", 0
-
- 0000000A 00000004		player1X dword 4h
- 0000000E 00000020		player1Y dword 20h
- 00000012 00000040		player2X dword 40h
- 00000016 00000020		player2Y dword 20h
-
- 0000001A 77 73 6F 6C 00	controls byte 'w', 's', 'o', 'l', 0			; player 1 up, player 1 down, player 2 up, player 2 down
- 0000001F 00000004		paddleHeight dword 4
-
- 00000023 0000005A		ballDirection dword 90				; in degrees? or slope? 
-
- 00000027 00000090		playerColor dword (lightBlue * 16)
- 0000002B 00000090		ballColor dword (lightBlue * 16)
- 0000002F 00000010		guiColor dword (blue * 16)
-
  00000000			.code
- 00000000			main proc
+ 00000000			UpdateBall proc,
+					xCoordBall: ptr dword,
+					yCoordBall: ptr dword,
+					xRun: ptr dword,
+					yRise: ptr dword,
+					space: ptr byte,
+					boardTopOffset: dword,
+					boardHeight: dword
+					
+					; xCoordBall - the current absolute x coordinate of the ball 
+					; yCoordBall - the current absolute y coordinate of the ball
+					; xRun - the x (horizontal) component of the ball's velocity
+					; yRise - the y (vertical) component of the ball's velocity
+						; note : a positive yRise value translates to downward motiuon of the ball on the consoloe and vice-versa
+					
+					; save the state of the registers from the time of the function call
+ 00000000  55		   *	    push   ebp
+ 00000001  8B EC	   *	    mov    ebp, esp
+ 00000003  60				pushad
 
-				     invoke DrawFrame, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
- 00000000  68 00000008 R   *	    push   OFFSET space
- 00000005  6A 01	   *	    push   +000000001h
- 00000007  6A 19	   *	    push   +000000019h
- 00000009  6A 32	   *	    push   +000000032h
- 0000000B  6A 1E	   *	    push   +00000001Eh
- 0000000D  6A 05	   *	    push   +000000005h
- 0000000F  E8 00000000 E   *	    call   DrawFrame
- 00000014  BA 00000000 R	     mov edx, OFFSET welcome
- 00000019  E8 00000000 E	     call WriteString
+				    ; check whether the ball is touching either frame
+				    ; bottom frame
+ 00000004  8B 45 0C			mov eax, [yCoordBall]
+ 00000007  8B 5D 1C			mov ebx, boardTopOffset
+ 0000000A  03 5D 20			add ebx, boardHeight
+ 0000000D  4B			    dec ebx
+ 0000000E  39 18			cmp [eax], ebx
+ 00000010  72 05			jb NotTouchingBottom
+ 00000012  8B 45 14			mov eax, [yRise]
+ 00000015  F7 18			neg dword ptr [eax]
+					
+ 00000017			NotTouchingBottom:
+					; top frame
+ 00000017  8B 45 0C		    mov eax, [yCoordBall]
+ 0000001A  8B 5D 1C			mov ebx, boardTopOffset
+ 0000001D  43				inc ebx
+ 0000001E  39 18			cmp [eax], ebx
+ 00000020  77 05			ja NotTouchingTop
+ 00000022  8B 45 14			mov eax, [yRise]
+ 00000025  F7 18			neg dword ptr [eax]
+					
+ 00000027			NotTouchingTop:
+					
+					
+					
+					; update the x- and y-coordinates of the ball
+					; x
+ 00000027  8B 45 10			mov eax, [xRun]
+ 0000002A  8B 18		    mov ebx, [eax]
+ 0000002C  8B 45 08		    mov eax, [xCoordBall]
+ 0000002F  03 18		    add ebx, [eax]
+ 00000031  89 18			mov [eax], ebx
+					; y
+ 00000033  8B 45 14			mov eax, [yRise]
+ 00000036  8B 18			mov ebx, [eax]
+ 00000038  8B 45 0C			mov eax, [yCoordBall]
+ 0000003B  03 18			add ebx, [eax]
+ 0000003D  89 18			mov [eax], ebx
+					
+					; Gotoxy moves the cursor to the point whose x-value is in dl and whose y-value is in dh
+ 0000003F  8B 5D 08			mov ebx, [xCoordBall]
+ 00000042  8A 13			mov dl, byte ptr [ebx]
+ 00000044  8B 5D 0C			mov ebx, [yCoordBall]
+ 00000047  8A 33			mov dh, byte ptr [ebx]
+ 00000049  E8 00000000 E		call Gotoxy
+					
+					; change the fill color to white to represent the ball with a white-filled space
+ 0000004E  B8 000000F0			mov eax, white * 16
+ 00000053  E8 00000000 E		call SetTextColor
+					
+					; print a space character to print the ball as a white space
+ 00000058  8B 55 18			mov edx, space
+ 0000005B  E8 00000000 E		call WriteString
+					
+					; now set the text background color back to black like a friend
+ 00000060  B8 00000000			mov eax, black * 16
+ 00000065  E8 00000000 E		call SetTextColor
 
- 0000001E  B9 00000001		     mov ecx, 1
- 00000023			MainLoop:
-					 ; Do stuff
-					 ; call Clrscr
-					 ; call MoveBall
-					 ; call CheckMovement
-					 ; call DrawScreen
-					 ; Call CheckForPoint
- 00000023  41			       inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to -1 so the inner loop can finish
- 00000024  E2 FD			 loop MainLoop
-					 
-					 
-				     exit
- 00000026  6A 00	   *	    push   +000000000h
- 00000028  E8 00000000 E   *	    call   ExitProcess
- 0000002D			main endp
-				end main
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 18:15:15
-Pong.asm						     Symbols 2 - 1
+				    ; now erase the ball's shadow from its previous location
+				    ; go to the ball's previous position
+					; set x-coordinate back to its original value
+ 0000006A  8B 45 08		    mov eax, [xCoordBall]
+ 0000006D  8B 18		    mov ebx, [eax]
+ 0000006F  8B 45 10		    mov eax, [xRun]
+ 00000072  2B 18			sub ebx, [eax]
+				    ; now store the (original) x-coordinate value in xCoordBall
+ 00000074  8B 45 08		    mov eax, [xCoordBall]
+ 00000077  89 18		    mov [eax], ebx
+
+					; set y-coordinate back to its original value
+ 00000079  8B 45 0C		    mov eax, [yCoordBall]
+ 0000007C  8B 18			mov ebx, [eax]
+ 0000007E  8B 45 14			mov eax, [yRise]
+ 00000081  2B 18			sub ebx, [eax]
+ 00000083  8B 45 0C			mov eax, [yCoordBall]
+ 00000086  89 18		    mov [eax], ebx
+
+				    ; Gotoxy moves the cursor to the point whose x-value is in dl and whose y-value is in dh
+ 00000088  8B 5D 08		    mov ebx, [xCoordBall]
+ 0000008B  8A 13			mov dl, [ebx]
+ 0000008D  8B 5D 0C			mov ebx, [yCoordBall]
+ 00000090  8A 33			mov dh, [ebx]
+ 00000092  E8 00000000 E		call Gotoxy
+					
+					; now print a space with a black background to remove the ball's shadow
+ 00000097  8B 55 18			mov edx, space
+ 0000009A  E8 00000000 E		call WriteString
+					
+					; now re-update xCoordBall and yCoordBall with their new values
+					; x
+ 0000009F  8B 45 10			mov eax, [xRun]
+ 000000A2  8B 18		    mov ebx, [eax]
+ 000000A4  8B 45 08		    mov eax, [xCoordBall]
+ 000000A7  03 18		    add ebx, [eax]
+ 000000A9  89 18			mov [eax], ebx
+					; y
+ 000000AB  8B 45 14			mov eax, [yRise]
+ 000000AE  8B 18			mov ebx, [eax]
+ 000000B0  8B 45 0C			mov eax, [yCoordBall]
+ 000000B3  03 18			add ebx, [eax]
+ 000000B5  89 18			mov [eax], ebx
+					
+				    ; move the cursor back to 0 to get it out of the gamespace
+ 000000B7  BA 00000000		    mov edx, 0
+ 000000BC  E8 00000000 E	    call Gotoxy
+
+					; restore the state of the registers from the time of the function call
+ 000000C1  61				popad
+					ret
+ 000000C2  C9		   *	    leave  
+ 000000C3  C2 001C	   *	    ret    0001Ch
+
+ 000000C6			UpdateBall endp
+				end
+					
+	
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 21:25:05
+_updateball.asm						     Symbols 2 - 1
 
 
 
@@ -199,8 +286,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000033 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000002D Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000C6 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -208,6 +295,7 @@ Procedures, parameters, and locals:
                 N a m e                 Type     Value    Attr
 
 CheckMovement  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Chill  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 CloseFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Clrscr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -291,6 +379,16 @@ Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SystemTimeToFileTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+UpdateBall . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000C6 Public STDCALL
+  xCoordBall . . . . . . . . . .	DWord	 bp + 00000008
+  yCoordBall . . . . . . . . . .	DWord	 bp + 0000000C
+  xRun . . . . . . . . . . . . .	DWord	 bp + 00000010
+  yRise  . . . . . . . . . . . .	DWord	 bp + 00000014
+  space  . . . . . . . . . . . .	DWord	 bp + 00000018
+  boardTopOffset . . . . . . . .	DWord	 bp + 0000001C
+  boardHeight  . . . . . . . . .	DWord	 bp + 00000020
+  NotTouchingBottom  . . . . . .	L Near	 00000017 _TEXT	
+  NotTouchingTop . . . . . . . .	L Near	 00000027 _TEXT	
 WaitMsg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteBinB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteBin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -309,8 +407,6 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000002D Public STDCALL
-  MainLoop . . . . . . . . . . .	L Near	 00000023 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -330,11 +426,6 @@ Symbols:
 @fardata . . . . . . . . . . . .	Text   	 FLAT
 @stack . . . . . . . . . . . . .	Text   	 FLAT
 ALT_MASK . . . . . . . . . . . .	Number	 00000003h   
-BOARD_HEIGHT . . . . . . . . . .	Number	 00000019h   
-BOARD_LEFT_EDGE_OFFSET . . . . .	Number	 0000001Eh   
-BOARD_TOP_OFFSET . . . . . . . .	Number	 00000005h   
-BOARD_WIDTH  . . . . . . . . . .	Number	 00000032h   
-BORDER_WIDTH . . . . . . . . . .	Number	 00000001h   
 CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h   
 CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
 CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
@@ -534,18 +625,13 @@ VK_UP  . . . . . . . . . . . . .	Number	 00000026h
 WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
 WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
 WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
-ballColor  . . . . . . . . . . .	DWord	 0000002B _DATA	
-ballDirection  . . . . . . . . .	DWord	 00000023 _DATA	
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
-controls . . . . . . . . . . . .	Byte	 0000001A _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
-gameSpeed  . . . . . . . . . . .	DWord	 00000004 _DATA	
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
-guiColor . . . . . . . . . . . .	DWord	 0000002F _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -553,15 +639,7 @@ lightGreen . . . . . . . . . . .	Number	 0000000Ah
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
-paddleHeight . . . . . . . . . .	DWord	 0000001F _DATA	
-player1X . . . . . . . . . . . .	DWord	 0000000A _DATA	
-player1Y . . . . . . . . . . . .	DWord	 0000000E _DATA	
-player2X . . . . . . . . . . . .	DWord	 00000012 _DATA	
-player2Y . . . . . . . . . . . .	DWord	 00000016 _DATA	
-playerColor  . . . . . . . . . .	DWord	 00000027 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
-space  . . . . . . . . . . . . .	Byte	 00000008 _DATA	
-welcome  . . . . . . . . . . . .	Byte	 00000000 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   

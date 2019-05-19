@@ -9,6 +9,7 @@ BOARD_LEFT_EDGE_OFFSET equ 30
 BOARD_WIDTH equ 50
 BOARD_HEIGHT equ 25
 BORDER_WIDTH equ 1
+FRAME_RATE equ 150 ; the chill-time between screen updates, controls the speed of the game
 
 .data
 welcome byte "hey", 0
@@ -17,7 +18,7 @@ gameSpeed dword 1h
 ; ball and paddle tracking
 xCoordBall dword BOARD_LEFT_EDGE_OFFSET
 yCoordBall dword BOARD_TOP_OFFSET + 2
-xRun dword 1
+xRun dword 2
 yRise dword 1
 
 
@@ -40,9 +41,9 @@ guiColor dword (blue * 16)
 .code
 main proc
 
-     invoke DrawFrame, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
-     mov edx, OFFSET welcome
-     call WriteString
+	invoke DrawFrame, BOARD_TOP_OFFSET, BOARD_LEFT_EDGE_OFFSET, BOARD_WIDTH, BOARD_HEIGHT, BORDER_WIDTH, addr space
+	mov edx, OFFSET welcome
+	call WriteString
 
      mov ecx, 1
 MainLoop:
@@ -52,7 +53,9 @@ MainLoop:
 	 ; call CheckMovement
 	 ; call DrawScreen
 	 ; Call CheckForPoint
-       inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to 0 so the inner loop can finish
+	 invoke UpdateBall, addr xCoordBall, addr yCoordBall, addr xRun, addr yRise, addr space, BOARD_TOP_OFFSET, BOARD_HEIGHT
+     inc ecx ; increment ecx to keep the loop going...when the ball goes out of bounds, set ecx to 0 so the inner loop can finish
+     invoke Chill, FRAME_RATE
 	 loop MainLoop
 	 
 	 
