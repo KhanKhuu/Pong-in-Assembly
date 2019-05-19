@@ -15,13 +15,12 @@ CheckMovement proto,
 	p1coordy: PTR dword,						; y-coord
 	p2coordx: PTR dword,						; x-coord
 	p2coordy: PTR dword,						; y-coord
-	controls: PTR byte,
 	paddleHeight: dword,
 	roomUpperBorder: dword,
 	roomLowerBorder: dword
  
- DrawBall proto,
-      xCoordBall: ptr dword,
-      yCoordBall: ptr dword,
-      xRun: ptr dword,
-	  yRise: ptr dword
+  DrawBall proto,
+     xCoordBall: ptr dword,
+     yCoordBall: ptr dword,
+     xRun: ptr dword,
+	yRise: ptr dword
