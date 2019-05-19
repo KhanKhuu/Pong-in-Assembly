@@ -37,8 +37,6 @@ player2Y dword (BOARD_TOP_OFFSET + (BOARD_HEIGHT / 2))
 
 paddleHeight dword 4h
 
-ballDirection dword 90				; in degrees? or slope? 
-
 playerColor dword (lightBlue * 16)
 ballColor dword (lightBlue * 16)
 guiColor dword (blue * 16)
