@@ -14,6 +14,11 @@ BORDER_WIDTH equ 1
 welcome byte "hey", 0
 gameSpeed dword 1h
 
+; ball and paddle tracking
+xCoordBall dword BOARD_LEFT_EDGE_OFFSET
+yCoordBall dword BOARD_TOP_OFFSET + 2
+xRun dword 1
+yRise dword 1
 
 
 space byte " ", 0

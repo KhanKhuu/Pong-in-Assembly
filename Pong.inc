@@ -18,3 +18,8 @@ CheckMovement proto,
 	roomUpperBorder: PTR dword,
 	roomLowerBorder: PTR dword
  
+ DrawBall proto,
+      xCoordBall: ptr dword,
+      yCoordBall: ptr dword,
+      xRun: ptr dword,
+	  yRise: ptr dword
