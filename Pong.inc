@@ -11,12 +11,14 @@ DrawFrame proto,
 	space: ptr byte
 
 CheckMovement proto,
-	p1coord: PTR dword,
-	p2coord: PTR dword,
+	p1coordx: PTR dword,						; x-coord
+	p1coordy: PTR dword,						; y-coord
+	p2coordx: PTR dword,						; x-coord
+	p2coordy: PTR dword,						; y-coord
 	controls: PTR byte,
-	paddleHeight: PTR dword,
-	roomUpperBorder: PTR dword,
-	roomLowerBorder: PTR dword
+	paddleHeight: dword,
+	roomUpperBorder: dword,
+	roomLowerBorder: dword
  
  DrawBall proto,
       xCoordBall: ptr dword,
