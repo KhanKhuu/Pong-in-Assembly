@@ -5,9 +5,9 @@ include Pong.inc
 
 ; game board and frame data
 BOARD_TOP_OFFSET equ 5d
-BOARD_LEFT_EDGE_OFFSET equ 30d
-BOARD_WIDTH equ 50d
-BOARD_HEIGHT equ 25d
+BOARD_LEFT_EDGE_OFFSET equ 15d
+BOARD_WIDTH equ 70d
+BOARD_HEIGHT equ 20d
 BORDER_WIDTH equ 1d
 
 
@@ -41,6 +41,12 @@ ballDirection dword 90				; in degrees? or slope?
 playerColor dword (lightBlue * 16)
 ballColor dword (lightBlue * 16)
 guiColor dword (blue * 16)
+
+; gui information
+p1scoreString byte "Player 1 score:", 0
+p2scoreString byte "Player 2 score:", 0
+p1score dword 0
+p2score dword 0
 
 .code
 main proc
