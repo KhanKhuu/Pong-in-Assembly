@@ -10,7 +10,6 @@ CheckMovement proc,
 	p1coordy: PTR dword,						; y-coord
 	p2coordx: PTR dword,						; x-coord
 	p2coordy: PTR dword,						; y-coord
-	controls: PTR byte,					; array for controls
 	paddleHeight: dword,
 	roomUpperBorder: dword,
 	roomLowerBorder: dword
@@ -28,6 +27,7 @@ CheckMovement proc,
      je CheckUpKeyP2
      cmp al, "l"
      je CheckDownKeyP2
+     jmp endit
 
 CheckUpKeyP1:                                ; eax = p1coordy
      mov ebx, p1coordy
