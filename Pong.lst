@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 21:25:05
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 21:36:07
 _updateball.asm						     Page 1 - 1
 
 
@@ -35,12 +35,13 @@ _updateball.asm						     Page 1 - 1
 			      C 	space: ptr byte
 			      C 
 			      C CheckMovement proto,
-			      C 	p1coord: PTR dword,
-			      C 	p2coord: PTR dword,
-			      C 	controls: PTR byte,
-			      C 	paddleHeight: PTR dword,
-			      C 	roomUpperBorder: PTR dword,
-			      C 	roomLowerBorder: PTR dword
+			      C 	p1coordx: PTR dword,						; x-coord
+			      C 	p1coordy: PTR dword,						; y-coord
+			      C 	p2coordx: PTR dword,						; x-coord
+			      C 	p2coordy: PTR dword,						; y-coord
+			      C 	paddleHeight: dword,
+			      C 	roomUpperBorder: dword,
+			      C 	roomLowerBorder: dword
 			      C  
 			      C  UpdateBall proto,
 			      C     xCoordBall: ptr dword,
@@ -192,7 +193,7 @@ _updateball.asm						     Page 1 - 1
 				end
 					
 	
-Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 21:25:05
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/18/19 21:36:07
 _updateball.asm						     Symbols 2 - 1
 
 
