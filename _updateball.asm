@@ -26,7 +26,26 @@ UpdateBall proc,
 	
 	; save the state of the registers from the time of the function call
 	pushad
-
+	
+	; if the ball goes outside the board, reset the ball
+	mov eax, xCoordBall
+	mov ebx, rightPaddleX
+	add ebx, 20
+	cmp [eax], ebx
+	ja Reset
+	mov ebx, leftPaddleX
+	sub ebx, 5
+	cmp [eax], ebx
+	ja CollisionTesting
+Reset:
+	mov eax, boardTopOffset
+	add eax, 2
+	mov ebx, leftPaddleX
+	add ebx, 2
+	invoke ResetBall, xCoordBall, yCoordBall, ebx, eax, xRun, yRise
+	jmp Finish
+	
+CollisionTesting:
     ; if the ball is beyond the paddles, let it go checking that here
     mov eax, xCoordBall
 	mov ebx, rightPaddleX
@@ -192,7 +211,7 @@ UpdateCoords:
     ; move the cursor back to 0 to get it out of the gamespace
     mov edx, 0
     call Gotoxy
-
+Finish:
 	; restore the state of the registers from the time of the function call
 	popad
 	ret

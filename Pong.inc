@@ -65,6 +65,14 @@ DrawScore proto,
     rightPaddleX: dword,
     rightPaddleY: dword,
 	paddleHeight: dword
+	
+ResetBall proto,
+	xCoordBall: ptr dword,
+	yCoordBall: ptr dword,
+	newXCoordBall: dword,
+	newYCoordBall: dword,
+	xRun: ptr dword,
+	yRise: ptr dword
  
 Chill proto,
      duration: dword

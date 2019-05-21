@@ -16,6 +16,7 @@
     <MASM Include="_chill.asm" />
     <MASM Include="_drawframe.asm" />
     <MASM Include="_DrawInitialPaddles.asm" />
+    <MASM Include="_resetball.asm" />
     <MASM Include="_updateball.asm" />
   </ItemGroup>
   <ItemGroup>
